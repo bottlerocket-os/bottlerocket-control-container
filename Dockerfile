@@ -22,10 +22,11 @@ LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 
 # Install the arch specific build of SSM agent *and confirm that it installed* -
 # yum will allow architecture-mismatched packages to not install and consider
-# the run successful.
+# the run successful. 
+# SSM Agent is downloaded from eu-north-1 as this region gets new releases of SSM Agent first.
 COPY ./hashes/ssm ./hashes
 RUN \
-  curl -L "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
+  curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes | sha512sum --check - && \
   yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils && \
