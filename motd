@@ -1,5 +1,13 @@
 Welcome to Bottlerocket's control container!
 
+                    ╱╲
+                   ╱  ╲
+                   ┃┄┄┃
+                   ┃▗▖┃
+                  ╱┃  ┃╲
+                  │┃┄┄┃│
+                   ╵╹╹╵
+
 This container gives you access to the Bottlerocket API, which in turn lets you
 inspect and configure the system.  You'll probably want to use the `apiclient`
 tool for that; for example, to inspect the system:
