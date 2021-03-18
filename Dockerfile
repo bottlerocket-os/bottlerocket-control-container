@@ -22,16 +22,18 @@ LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 
 # Install the arch specific build of SSM agent *and confirm that it installed* -
 # yum will allow architecture-mismatched packages to not install and consider
-# the run successful. 
+# the run successful.
 # SSM Agent is downloaded from eu-north-1 as this region gets new releases of SSM Agent first.
 COPY ./hashes/ssm ./hashes
 RUN \
   curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes | sha512sum --check - && \
-  yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils && \
+  yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils jq && \
   rm "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
-  rm -rf /var/cache/yum ./hashes
+  rm -rf /var/cache/yum ./hashes && \
+  rmdir /var/lib/amazon/ssm && \
+  ln -snf /.bottlerocket/host-containers/current/ssm /var/lib/amazon/ssm
 
 # Add motd explaining the control container.
 RUN rm -f /etc/motd /etc/issue
@@ -52,4 +54,6 @@ RUN chmod +x /usr/bin/enable-admin-container
 RUN groupadd -g 274 api
 RUN useradd -m -G users,api ssm-user
 
-CMD ["/usr/bin/amazon-ssm-agent"]
+ADD start_control_ssm.sh /usr/sbin/
+RUN chmod +x /usr/sbin/start_control_ssm.sh
+CMD ["/usr/sbin/start_control_ssm.sh"]

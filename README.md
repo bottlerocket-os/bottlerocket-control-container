@@ -9,3 +9,32 @@ For more information about the control container, including how to use it and ho
 
 You'll need Docker 17.06.2 or later, for multi-stage build support.
 Then run `make`!
+
+## Connecting to AWS Systems Manager (SSM)
+
+Starting from v0.5.0, users have the option to pass in their own activation information for SSM.
+This is for users that want to set up on-premises virtual machines (VMs) in their hybrid environment as managed instances.
+
+Users can add their [own activations](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-managed-instance-activation.html) by populating the control container's user data with a base64-encoded JSON block.
+
+To use hybrid activations for managed instances you will want to generate a JSON-structure like this:
+
+```
+{
+  "ssm": {
+    "activation-id": "foo",
+    "activation-code": "bar",
+    "region":"us-west-2"
+  }
+}
+```
+
+Once you've created your JSON, you'll need to base64-encode it and put it in the control host container's `user-data` setting in your [instance user data](https://github.com/bottlerocket-os/bottlerocket#using-user-data).
+
+For example:
+
+```
+[settings.host-containers.control]
+# ex: echo '{"ssm":{"activation-id":"foo","activation-code":"bar","region":"us-west-2"}}' | base64
+user-data = "eyJzc20iOnsiYWN0aXZhdGlvbi1pZCI6ImZvbyIsImFjdGl2YXRpb24tY29kZSI6ImJhciIsInJlZ2lvbiI6InVzLXdlc3QtMiJ9fQo="
+```
