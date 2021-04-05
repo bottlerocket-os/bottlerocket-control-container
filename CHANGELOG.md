@@ -1,3 +1,11 @@
+# 0.5.0
+
+* Add support for on-premises and hybrid environments. ([#12])
+* Symlinked `/var/lib/amazon/ssm` to `/.bottlerocket/host-containers/current/ssm` so that SSM Agent state data can persist between boots. ([#12])
+* Update SSM Agent version to 3.0.882.0. ([#12])
+
+[#12]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/12
+
 # 0.4.2
 
 * Update SSM Agent version to 3.0.732.0. ([#8])
