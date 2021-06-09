@@ -1,3 +1,9 @@
+# 0.5.1
+
+* Update SSM Agent version to 3.0.1209.0. ([#14])
+
+[#14]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/14
+
 # 0.5.0
 
 * Add support for on-premises and hybrid environments. ([#12])
