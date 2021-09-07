@@ -25,7 +25,7 @@ ARCH ?= $(lastword $(subst :, ,$(filter $(UNAME_ARCH):%,x86_64:amd64 aarch64:arm
 DOCKER_ARCH ?= $(lastword $(subst :, ,$(filter $(ARCH):%,amd64:amd64 arm64:arm64v8)))
 
 # SSM_AGENT_VERSION is the SSM Agent's distributed RPM Version to install.
-SSM_AGENT_VERSION ?= 3.0.1209.0
+SSM_AGENT_VERSION ?= 3.1.192.0
 
 .PHONY: all build check check-static-bash
 
