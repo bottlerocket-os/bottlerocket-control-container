@@ -12,9 +12,15 @@ if ! command -v apiclient >/dev/null 2>&1; then
    error "can't find 'apiclient'"
 fi
 
-echo "Enabling admin container"
-if ! apiclient set host-containers.admin.enabled=true; then
-   error "failed to enable admin container"
-fi
+# Check if the admin container is already enabled; if it is, we don't want to
+# change settings, or it may be restarted.
+if apiclient raw -u "/settings?keys=settings.host-containers.admin.enabled" | grep -q true; then
+   echo "The admin container is already enabled - it should start soon, if it hasn't already, and then you can SSH in."
+else
+   echo "Enabling admin container"
+   if ! apiclient set host-containers.admin.enabled=true; then
+      error "failed to enable admin container"
+   fi
 
-echo "The admin container is now enabled - it should pull and start soon, and then you can SSH in"
+   echo "The admin container is now enabled - it should pull and start soon, and then you can SSH in."
+fi
