@@ -1,0 +1,45 @@
+#!/bin/bash
+# This file is part of Bottlerocket.
+# Copyright Amazon.com, Inc., its affiliates, or other contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+THISDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+error() {
+   echo -e "Error: ${*}\n" >&2
+   exit 1
+}
+
+if ! command -v apiclient >/dev/null 2>&1; then
+   error "can't find 'apiclient'"
+fi
+
+# Use our existing script to enable the admin container if it's not already.
+# We don't want its stdout, which is about how to connect to the admin
+# container; that's what this script is for!
+echo "Confirming admin container is enabled..."
+if ! "${THISDIR}/enable-admin-container" >/dev/null; then
+   error "failed to enable admin container."
+fi
+
+echo -n "Waiting for admin container to start..."
+max=60
+i=0
+while :; do
+   (( i++ ))
+   if [[ $i -gt $max ]]; then
+      echo
+      error "could not connect to admin container within $max seconds."
+   fi
+
+   if apiclient exec admin true &>/dev/null; then
+      break
+   fi
+
+   echo -n "."
+   sleep 1
+done
+echo
+
+echo "Entering admin container"
+apiclient exec admin bash
