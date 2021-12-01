@@ -1,3 +1,11 @@
+# 0.5.3
+
+* Add 'enter-admin-container' to easily enable and enter admin container. ([#18])
+* Update SSM Agent version to 3.1.501.0. ([#19])
+
+[#18]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/18
+[#19]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/19
+
 # 0.5.2
 
 * Update SSM Agent version to 3.1.192.0. ([#15])
