@@ -29,7 +29,7 @@ RUN \
   curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes | sha512sum --check - && \
-  yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils jq && \
+  yum -y update && yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils jq && \
   rm "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   rm -rf /var/cache/yum ./hashes && \
   rmdir /var/lib/amazon/ssm && \
