@@ -46,9 +46,9 @@ ADD ./bashrc /etc/skel/.bashrc
 # ENV environment variable.  Point it to our bashrc, which just prints motd.
 ENV ENV /etc/skel/.bashrc
 
-# Add our helper to quickly enable the admin container.
-ADD ./enable-admin-container /usr/bin/
-RUN chmod +x /usr/bin/enable-admin-container
+# Add our helpers to quickly interact with the admin container.
+ADD ./enable-admin-container ./enter-admin-container /usr/bin/
+RUN chmod +x /usr/bin/enable-admin-container /usr/bin/enter-admin-container
 
 # Create our user in the group that allows API access.
 RUN groupadd -g 274 api
