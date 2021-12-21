@@ -1,3 +1,10 @@
+# 0.5.4
+
+* Add 'enter-admin-container' to Dockerfile. ([#21])
+
+[#21]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/21
+
+
 # 0.5.3
 
 * Add 'enter-admin-container' to easily enable and enter admin container. ([#18])
