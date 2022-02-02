@@ -47,8 +47,15 @@ ADD ./bashrc /etc/skel/.bashrc
 ENV ENV /etc/skel/.bashrc
 
 # Add our helpers to quickly interact with the admin container.
-ADD ./enable-admin-container ./enter-admin-container /usr/bin/
-RUN chmod +x /usr/bin/enable-admin-container /usr/bin/enter-admin-container
+ADD \
+  ./disable-admin-container \
+  ./enable-admin-container \
+  ./enter-admin-container \
+  /usr/bin/
+RUN chmod +x \
+  /usr/bin/disable-admin-container \
+  /usr/bin/enable-admin-container \
+  /usr/bin/enter-admin-container
 
 # Create our user in the group that allows API access.
 RUN groupadd -g 274 api

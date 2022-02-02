@@ -1,0 +1,26 @@
+#!/bin/bash
+# This file is part of Bottlerocket.
+# Copyright Amazon.com, Inc., its affiliates, or other contributors. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+error() {
+   echo -e "Error: ${*}\n" >&2
+   exit 1
+}
+
+if ! command -v apiclient >/dev/null 2>&1; then
+   error "can't find 'apiclient'"
+fi
+
+# Check if the admin container is already disabled; if it is, we don't want to
+# change settings, or it may be restarted.
+if apiclient raw -u "/settings?keys=settings.host-containers.admin.enabled" | grep -q false; then
+   echo "The admin container is already disabled - it should stop soon, if it hasn't already."
+else
+   echo "Disabling admin container"
+   if ! apiclient set host-containers.admin.enabled=false; then
+      error "failed to disable admin container"
+   fi
+
+   echo "The admin container is now disabled - it should stop soon."
+fi

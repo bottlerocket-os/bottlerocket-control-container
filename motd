@@ -21,3 +21,7 @@ You can also access the admin container through SSH if you have network access.
 Just enable the container like this, then SSH to the host:
 
    enable-admin-container
+
+You can disable the admin container like this:
+
+   disable-admin-container

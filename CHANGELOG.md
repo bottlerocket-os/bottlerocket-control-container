@@ -1,9 +1,15 @@
+# 0.5.5
+
+* Add 'disable-admin-container' to easily disable the admin container. ([#23])
+* Update SSM Agent version to 3.1.821.0. ([#23])
+
+[#23]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/23
+
 # 0.5.4
 
 * Add 'enter-admin-container' to Dockerfile. ([#21])
 
 [#21]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/21
-
 
 # 0.5.3
 
