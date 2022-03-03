@@ -1,4 +1,4 @@
-FROM amazonlinux:2
+FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
 # IMAGE_VERSION is the assigned version of inputs for this image.
 ARG IMAGE_VERSION
