@@ -1,6 +1,4 @@
-# DOCKER_ARCH is the multiarch variant that is used as the base image.
-ARG DOCKER_ARCH
-FROM $DOCKER_ARCH/amazonlinux:2
+FROM amazonlinux:2
 
 # IMAGE_VERSION is the assigned version of inputs for this image.
 ARG IMAGE_VERSION
@@ -8,14 +6,10 @@ ENV IMAGE_VERSION=$IMAGE_VERSION
 # IMAGE_VERSION is the assigned version of inputs for this image.
 ARG SSM_AGENT_VERSION
 ENV SSM_AGENT_VERSION=$SSM_AGENT_VERSION
-# ARCH is the normative target architecture for the image.
-ARG ARCH
-ENV ARCH=$ARCH
 
 # Validation
 RUN : \
     "${IMAGE_VERSION:?IMAGE_VERSION is required to build}" \
-    "${ARCH:?ARCH is required to build}" \
     "${SSM_AGENT_VERSION:?SSM Agent version required to build}"
 
 LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
@@ -26,6 +20,7 @@ LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 # SSM Agent is downloaded from eu-north-1 as this region gets new releases of SSM Agent first.
 COPY ./hashes/ssm ./hashes
 RUN \
+  ARCH=$(uname -m | sed 's/aarch64/arm64/' | sed 's/x86_64/amd64/') && \
   curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes | sha512sum --check - && \
