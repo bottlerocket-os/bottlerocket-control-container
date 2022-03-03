@@ -42,20 +42,15 @@ ADD ./bashrc /etc/skel/.bashrc
 ENV ENV /etc/skel/.bashrc
 
 # Add our helpers to quickly interact with the admin container.
-ADD \
+ADD --chmod=755 \
   ./disable-admin-container \
   ./enable-admin-container \
   ./enter-admin-container \
   /usr/bin/
-RUN chmod +x \
-  /usr/bin/disable-admin-container \
-  /usr/bin/enable-admin-container \
-  /usr/bin/enter-admin-container
 
 # Create our user in the group that allows API access.
 RUN groupadd -g 274 api
 RUN useradd -m -G users,api ssm-user
 
-ADD start_control_ssm.sh /usr/sbin/
-RUN chmod +x /usr/sbin/start_control_ssm.sh
+ADD --chmod=755 start_control_ssm.sh /usr/sbin/
 CMD ["/usr/sbin/start_control_ssm.sh"]

@@ -31,7 +31,7 @@ dist: all
 
 # Build the container image.
 build:
-	docker build \
+	DOCKER_BUILDKIT=1 docker build \
 		--tag $(IMAGE_NAME) \
 		--build-arg IMAGE_VERSION="$(IMAGE_VERSION)" \
 		--build-arg SSM_AGENT_VERSION="$(SSM_AGENT_VERSION)" \
