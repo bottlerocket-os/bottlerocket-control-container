@@ -32,9 +32,9 @@ RUN \
 
 # Add motd explaining the control container.
 RUN rm -f /etc/motd /etc/issue
-ADD --chown=root:root motd /etc/
+COPY --chown=root:root motd /etc/
 # Add bashrc that shows the motd.
-ADD ./bashrc /etc/skel/.bashrc
+COPY ./bashrc /etc/skel/.bashrc
 # SSM starts sessions with 'sh', not 'bash', which for us is a link to bash.
 # Furthermore, it starts sh as an interactive shell, but not a login shell.
 # In this mode, the only startup file respected is the one pointed to by the
@@ -42,7 +42,7 @@ ADD ./bashrc /etc/skel/.bashrc
 ENV ENV /etc/skel/.bashrc
 
 # Add our helpers to quickly interact with the admin container.
-ADD --chmod=755 \
+COPY --chmod=755 \
   ./disable-admin-container \
   ./enable-admin-container \
   ./enter-admin-container \
@@ -52,5 +52,5 @@ ADD --chmod=755 \
 RUN groupadd -g 274 api
 RUN useradd -m -G users,api ssm-user
 
-ADD --chmod=755 start_control_ssm.sh /usr/sbin/
+COPY --chmod=755 start_control_ssm.sh /usr/sbin/
 CMD ["/usr/sbin/start_control_ssm.sh"]
