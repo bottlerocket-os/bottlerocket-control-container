@@ -33,6 +33,9 @@ RUN \
 # Add motd explaining the control container.
 RUN rm -f /etc/motd /etc/issue
 COPY --chown=root:root motd /etc/
+# Add custom PS1 to show you are in the control container.
+ARG CUSTOM_PS1='[\u@control]\$ '
+RUN echo "PS1='$CUSTOM_PS1'" > "/etc/profile.d/bottlerocket-ps1.sh"
 # Add bashrc that shows the motd.
 COPY ./bashrc /etc/skel/.bashrc
 # SSM starts sessions with 'sh', not 'bash', which for us is a link to bash.
