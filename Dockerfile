@@ -1,3 +1,31 @@
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 as builder
+
+# Install build dependencies for the package(s) below
+RUN \
+  yum -y install \
+    autoconf automake bison gettext-devel libtool make pkgconfig tar xz
+COPY ./sdk-fetch /usr/local/bin
+
+ARG utillinux_version=2.37.4
+
+WORKDIR /opt/build
+COPY ./hashes/util-linux ./hashes
+
+RUN \
+  sdk-fetch hashes && \
+  tar -xf util-linux-${utillinux_version}.tar.xz && \
+  rm util-linux-${utillinux_version}.tar.xz hashes
+
+# Build script for SSM session logging
+WORKDIR /opt/build/util-linux-${utillinux_version}
+RUN \
+  ./autogen.sh && ./configure \
+        --disable-all-programs \
+        --enable-scriptutils \
+    || { cat config.log; exit 1; }
+RUN make -j`nproc` script
+RUN cp script /opt/script
+
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
 # IMAGE_VERSION is the assigned version of inputs for this image.
@@ -14,6 +42,10 @@ RUN : \
 
 LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 
+COPY --from=builder /opt/script /usr/bin/
+# Validate script binary
+RUN /usr/bin/script &>/dev/null
+
 # Install the arch specific build of SSM agent *and confirm that it installed* -
 # yum will allow architecture-mismatched packages to not install and consider
 # the run successful.
@@ -24,7 +56,7 @@ RUN \
   curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes | sha512sum --check - && \
-  yum -y update && yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils jq && \
+  yum -y update && yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" shadow-utils jq screen && \
   rm "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   rm -rf /var/cache/yum ./hashes && \
   rmdir /var/lib/amazon/ssm && \
