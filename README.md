@@ -7,7 +7,7 @@ For more information about the control container, including how to use it and ho
 
 ## Building the Container Image
 
-You'll need Docker 17.06.2 or later, for multi-stage build support.
+You'll need Docker 20.10 or later for multi-stage build, BuildKit, and chmod on COPY/ADD support.
 Then run `make`!
 
 ## Connecting to AWS Systems Manager (SSM)

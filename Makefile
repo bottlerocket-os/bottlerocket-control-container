@@ -13,16 +13,8 @@ DESTDIR ?= .
 # tarball.
 DISTFILE ?= $(subst /,,$(DESTDIR))/$(subst /,_,$(IMAGE_NAME)).tar.gz
 
-# These values derive ARCH and DOCKER_ARCH which are needed by dependencies in
-# image build defaulting to system's architecture when not specified.
-#
-# UNAME_ARCH is the runtime architecture of the building host.
 UNAME_ARCH = $(shell uname -m)
-# ARCH is the target architecture which is being built for.
 ARCH ?= $(lastword $(subst :, ,$(filter $(UNAME_ARCH):%,x86_64:amd64 aarch64:arm64)))
-# DOCKER_ARCH is the docker specific architecture specifier used for building on
-# multiarch container images.
-DOCKER_ARCH ?= $(lastword $(subst :, ,$(filter $(ARCH):%,amd64:amd64 arm64:arm64v8)))
 
 # SSM_AGENT_VERSION is the SSM Agent's distributed RPM Version to install.
 SSM_AGENT_VERSION ?= 3.1.821.0
@@ -39,11 +31,9 @@ dist: all
 
 # Build the container image.
 build:
-	docker build \
+	DOCKER_BUILDKIT=1 docker build \
 		--tag $(IMAGE_NAME) \
 		--build-arg IMAGE_VERSION="$(IMAGE_VERSION)" \
-		--build-arg ARCH="$(ARCH)" \
-		--build-arg DOCKER_ARCH="$(DOCKER_ARCH)" \
 		--build-arg SSM_AGENT_VERSION="$(SSM_AGENT_VERSION)" \
 		-f Dockerfile . >&2
 
