@@ -25,6 +25,12 @@ RUN \
     || { cat config.log; exit 1; }
 RUN make -j`nproc` script
 RUN cp script /opt/script
+RUN \
+  mkdir -p /usr/share/licenses/util-linux && cp -p \
+      Documentation/licenses/COPYING.BSD-4-Clause-UC \
+      Documentation/licenses/COPYING.GPL-2.0-or-later \
+      Documentation/licenses/COPYING.LGPL-2.1-or-later \
+    /usr/share/licenses/util-linux
 
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
@@ -43,6 +49,7 @@ RUN : \
 LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 
 COPY --from=builder /opt/script /usr/bin/
+COPY --from=builder /usr/share/licenses/util-linux /usr/share/licenses/util-linux
 # Validate script binary
 RUN /usr/bin/script &>/dev/null
 
