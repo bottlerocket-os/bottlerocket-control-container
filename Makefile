@@ -19,7 +19,7 @@ ARCH ?= $(lastword $(subst :, ,$(filter $(UNAME_ARCH):%,x86_64:amd64 aarch64:arm
 # SSM_AGENT_VERSION is the SSM Agent's distributed RPM Version to install.
 SSM_AGENT_VERSION ?= 3.1.1141.0
 
-.PHONY: all build check check-static-bash
+.PHONY: all build check check-ssm-agent
 
 # Run all build tasks for this container image.
 all: build check
