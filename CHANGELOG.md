@@ -1,3 +1,18 @@
+# 0.6.0
+
+* Update SSM Agent version to 3.1.1141.0. ([#30])
+* Fix missing packages to support SSM session logging. ([#27], [#28])
+* Add some art to MOTD. ([#25])
+* Switch to ECR Public, fix multi-arch builds, and more. ([#26])
+* Improve build process by moving SSM agent install to own line. ([#29])
+
+[#25]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/25
+[#26]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/26
+[#27]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/27
+[#28]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/28
+[#29]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/29
+[#30]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/30
+
 # 0.5.5
 
 * Add 'disable-admin-container' to easily disable the admin container. ([#23])
