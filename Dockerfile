@@ -8,7 +8,7 @@ COPY ./sdk-fetch /usr/local/bin
 
 ARG utillinux_version=2.37.4
 
-WORKDIR /opt/build
+WORKDIR ${HOME}/build
 COPY ./hashes/util-linux ./hashes
 
 RUN \
@@ -17,14 +17,22 @@ RUN \
   rm util-linux-${utillinux_version}.tar.xz hashes
 
 # Build script for SSM session logging
-WORKDIR /opt/build/util-linux-${utillinux_version}
+WORKDIR ${HOME}/build/util-linux-${utillinux_version}
 RUN \
   ./autogen.sh && ./configure \
-        --disable-all-programs \
-        --enable-scriptutils \
+      --disable-makeinstall-chown \
+      --disable-nls \
+      --disable-rpath \
+      --prefix=/opt/util-linux \
+      --without-audit \
+      --without-python \
+      --without-readline \
+      --without-systemd \
+      --without-udev \
+      --without-utempter \
     || { cat config.log; exit 1; }
-RUN make -j`nproc` script
-RUN cp script /opt/script
+RUN make -j`nproc` lscpu script
+RUN make install-strip
 RUN \
   mkdir -p /usr/share/licenses/util-linux && cp -p \
       Documentation/licenses/COPYING.BSD-4-Clause-UC \
@@ -48,8 +56,19 @@ RUN : \
 
 LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 
-COPY --from=builder /opt/script /usr/bin/
-COPY --from=builder /usr/share/licenses/util-linux /usr/share/licenses/util-linux
+# Copy util-linux binaries and dependencies
+COPY --from=builder /opt/util-linux/bin/lscpu /opt/util-linux/bin/script \
+                    /opt/util-linux/bin/
+COPY --from=builder /opt/util-linux/include/libsmartcols \
+                    /opt/util-linux/include/libsmartcols
+COPY --from=builder /opt/util-linux/lib/libsmartcols* \
+                    /opt/util-linux/lib/
+COPY --from=builder /usr/share/licenses/util-linux \
+                    /usr/share/licenses/util-linux
+RUN ln -s /opt/util-linux/bin/* /usr/bin
+
+# Validate lscpu binary
+RUN /usr/bin/lscpu &>/dev/null
 # Validate script binary
 RUN /usr/bin/script &>/dev/null
 
@@ -62,7 +81,8 @@ RUN \
   ARCH=$(uname -m | sed 's/aarch64/arm64/' | sed 's/x86_64/amd64/') && \
   curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
-  grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes | sha512sum --check - && \
+  grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes \
+       | sha512sum --check - && \
   yum update -y && yum install -y jq screen shadow-utils && \
   yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   rm "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
