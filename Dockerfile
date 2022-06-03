@@ -77,12 +77,15 @@ RUN /usr/bin/script &>/dev/null
 # the run successful.
 # SSM Agent is downloaded from eu-north-1 as this region gets new releases of SSM Agent first.
 COPY ./hashes/ssm ./hashes
+COPY ./gpg-keys/amazon-ssm-agent.gpg ./amazon-ssm-agent.gpg
 RUN \
   ARCH=$(uname -m | sed 's/aarch64/arm64/' | sed 's/x86_64/amd64/') && \
   curl -L "https://s3.eu-north-1.amazonaws.com/amazon-ssm-eu-north-1/${SSM_AGENT_VERSION}/linux_${ARCH}/amazon-ssm-agent.rpm" \
        -o "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   grep "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" hashes \
-       | sha512sum --check - && \
+    | sha512sum --check - && \
+  rpm --import amazon-ssm-agent.gpg && \
+  rpm --checksig "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   yum update -y && yum install -y jq screen shadow-utils && \
   yum install -y "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
   rm "amazon-ssm-agent-${SSM_AGENT_VERSION}.${ARCH}.rpm" && \
