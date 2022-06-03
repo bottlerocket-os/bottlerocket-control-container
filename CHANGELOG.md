@@ -1,3 +1,11 @@
+# 0.6.1
+* Add lscpu binary to container ([#31])
+* Update SSM Agent version to 3.1.1476.0 ([#32])
+* Add GPG sigcheck for SSM Agent ([#32])
+
+[#31]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/31
+[#32]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/32
+
 # 0.6.0
 
 * Update SSM Agent version to 3.1.1141.0. ([#30])
