@@ -6,7 +6,7 @@ RUN \
     autoconf automake bison gettext-devel libtool make pkgconfig tar xz
 COPY ./sdk-fetch /usr/local/bin
 
-ARG utillinux_version=2.37.4
+ARG utillinux_version=2.38.1
 
 WORKDIR ${HOME}/build
 COPY ./hashes/util-linux ./hashes
