@@ -1,20 +1,30 @@
+# 0.7.0
+
+* Update SSM agent to 3.2.419.0 ([#41])
+
+[#41]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/41
+
 # 0.6.4
+
 * Update SSM agent to 3.1.1856.0 ([#36])
 
 [#36]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/36
 
 # 0.6.3
+
 * Update SSM agent to 3.1.1767.0 ([#34])
 
 [#34]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/34
 
 # 0.6.2
+
 * Update SSM agent to 3.1.1634.0 ([#33])
 * Update util-linux to 2.38.1 ([#33])
 
 [#33]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/33
 
 # 0.6.1
+
 * Add lscpu binary to container ([#31])
 * Update SSM Agent version to 3.1.1476.0 ([#32])
 * Add GPG sigcheck for SSM Agent ([#32])
@@ -95,4 +105,3 @@
 Initial release of **bottlerocket-control-container** - the default control container for Bottlerocket.
 
 See the [README](README.md) for additional information.
-
