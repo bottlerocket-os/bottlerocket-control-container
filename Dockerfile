@@ -70,7 +70,7 @@ RUN ln -s /opt/util-linux/bin/* /usr/bin
 # Validate lscpu binary
 RUN /usr/bin/lscpu &>/dev/null
 # Validate script binary
-RUN /usr/bin/script &>/dev/null
+RUN /usr/bin/script --version &>/dev/null
 
 # Install the arch specific build of SSM agent *and confirm that it installed* -
 # yum will allow architecture-mismatched packages to not install and consider
