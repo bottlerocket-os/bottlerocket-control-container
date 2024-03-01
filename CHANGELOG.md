@@ -1,3 +1,9 @@
+# 0.7.9
+
+* Update SSM agent to 3.3.40.0 ([#55])
+
+[#55]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/55
+
 # 0.7.8
 
 * Update SSM agent to 3.2.2222.0 ([#54])
