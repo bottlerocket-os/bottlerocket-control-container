@@ -1,3 +1,10 @@
+# 0.7.20
+
+* Link Host certificates if available. ([#70])
+* Rebuilt to get the latest AL2 updates.
+
+[#70]: https://github.com/bottlerocket-os/bottlerocket-admin-container/pull/70
+
 # 0.7.19
 
 * Rebuilt to get the latest AL2 updates.
