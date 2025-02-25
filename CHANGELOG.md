@@ -1,3 +1,10 @@
+# 0.7.21
+
+* Update SSM agent to 3.3.1802.0 ([#74])
+* Update amazon-ssm-agent gpg public key ([#74])
+
+[#74]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/74
+
 # 0.7.20
 
 * Link Host certificates if available. ([#70])
