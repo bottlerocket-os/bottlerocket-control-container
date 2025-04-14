@@ -1,12 +1,23 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2 as builder
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
 
 # Install build dependencies for the package(s) below
 RUN \
   yum -y install \
-    autoconf automake bison gettext-devel libtool make pkgconfig tar xz
+    autoconf \
+    automake \
+    bison \
+    gettext-devel \
+    libtool \
+    make \
+    pkgconfig \
+    tar \
+    xz
 COPY ./sdk-fetch /usr/local/bin
 
 ARG utillinux_version=2.38.1
+ENV utillinux_version=$utillinux_version
+
+ENV HOME=/root
 
 WORKDIR ${HOME}/build
 COPY ./hashes/util-linux ./hashes
@@ -42,10 +53,11 @@ RUN \
 
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
-# IMAGE_VERSION is the assigned version of inputs for this image.
+# IMAGE_VERSION is the assigned version from input for this image.
 ARG IMAGE_VERSION
 ENV IMAGE_VERSION=$IMAGE_VERSION
-# IMAGE_VERSION is the assigned version of inputs for this image.
+
+# SSM_AGENT_VERSION is the assigned agent version from input for this image.
 ARG SSM_AGENT_VERSION
 ENV SSM_AGENT_VERSION=$SSM_AGENT_VERSION
 
@@ -105,7 +117,7 @@ COPY ./bashrc /etc/skel/.bashrc
 # Furthermore, it starts sh as an interactive shell, but not a login shell.
 # In this mode, the only startup file respected is the one pointed to by the
 # ENV environment variable.  Point it to our bashrc, which just prints motd.
-ENV ENV /etc/skel/.bashrc
+ENV ENV=/etc/skel/.bashrc
 
 # Add our helpers to quickly interact with the admin container.
 COPY --chmod=755 \
