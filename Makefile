@@ -42,9 +42,10 @@ check: check-ssm-agent
 
 # Check that the SSM Agent is the expected version.
 check-ssm-agent:
-	docker run --rm --entrypoint /usr/bin/bash \
+	@echo "Running SSM version check"
+	@docker run --rm --entrypoint /usr/bin/bash \
 		$(IMAGE_NAME) \
-		-c 'rpm -q amazon-ssm-agent --queryformat "%{version}\n" | grep -qFw "$(SSM_AGENT_VERSION)"' >&2
+		-c 'amazon-ssm-agent -version | grep -Fw "$(SSM_AGENT_VERSION)"' >&2
 
 # Download SSM Agent version SSM_AGENT_VERSION for all architectures.
 download-ssm-agent: amazon-ssm-agent-${SSM_AGENT_VERSION}.amd64.rpm amazon-ssm-agent-${SSM_AGENT_VERSION}.arm64.rpm
