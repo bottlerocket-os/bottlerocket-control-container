@@ -33,6 +33,7 @@ COPY ./hashes/ssm ./hashes
 COPY ./gpg-keys/amazon-ssm-agent.gpg ./amazon-ssm-agent.gpg
 RUN dnf update -y && \
     dnf install -y \
+        crypto-policies-scripts \
         jq \
         libutempter \
         screen \
