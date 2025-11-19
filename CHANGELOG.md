@@ -1,3 +1,7 @@
+# 0.8.11
+
+* Rebuilt to get the latest AL2 updates.
+
 # 0.8.10
 
 * Update SSM version to 3.3.3270.0
