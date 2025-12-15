@@ -1,3 +1,11 @@
+# 0.20.0
+
+* Rebase on Amazon Linux 2023. ([#90])
+* Enable FIPS on FIPS-enabled hosts. ([#90])
+* Update SSM agent to 3.3.3572.0. ([#90])
+
+[#90]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/90
+
 # 0.8.11
 
 * Rebuilt to get the latest AL2 updates.
@@ -61,7 +69,7 @@
 * Link Host certificates if available. ([#70])
 * Rebuilt to get the latest AL2 updates.
 
-[#70]: https://github.com/bottlerocket-os/bottlerocket-admin-container/pull/70
+[#70]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/70
 
 # 0.7.19
 
