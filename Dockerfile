@@ -62,6 +62,8 @@ COPY --from=builder /root/build/util-linux/usr/share/licenses/util-linux/COPYING
                     /usr/share/licenses/util-linux/
 RUN ln -s /opt/util-linux/bin/* /usr/bin
 
+# Validate amazon-ssm-agent binary
+RUN /usr/bin/amazon-ssm-agent -version
 # Validate lscpu binary
 RUN /usr/bin/lscpu
 # Validate script binary
