@@ -8,6 +8,9 @@ declare -r SSM_AGENT_PERSISTENT_STATE_DIR="${PERSISTENT_STORAGE_BASE_DIR}/ssm"
 declare -r SSM_AGENT_LOCAL_STATE_DIR="/var/lib/amazon/ssm"
 declare -r HOST_CERTS="/.bottlerocket/certs"
 
+#shellcheck disable=SC2155  # If not set then we'll treat it as 0
+declare -r FIPS_MODE_FLAG=$(cat '/proc/sys/crypto/fips_enabled' 2>/dev/null || echo 0)
+
 log() {
   echo "$*" >&2
 }
@@ -64,6 +67,17 @@ fetch_from_json() {
 # and the symlinked /var/lib/amazon/ssm/registration file is not populated,
 # then check to see if the user-data file contains ssm at the top-level. If so,
 # attempt to manually register with SSM with a hybrid activation.
+
+if [[ ${FIPS_MODE_FLAG} -eq 1 ]]; then
+  update-crypto-policies --set FIPS 2>/dev/null
+  if [[ "$(cat '/etc/crypto-policies/config')" != "FIPS" ]]; then
+    log "Failed to validate FIPS configuration"
+    exit 1
+  fi
+
+  # Enable the Go Cryptographic Module to operate in FIPS 140-3 mode at runtime
+  export GODEBUG='fips140=on'
+fi
 
 [[ -d "${HOST_CERTS}" ]] && link_host_certs
 
