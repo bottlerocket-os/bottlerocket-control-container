@@ -1,3 +1,7 @@
+# 0.20.1
+
+* Update SSM version to 3.3.3598.0
+
 # 0.20.0
 
 * Rebase on Amazon Linux 2023. ([#90])
