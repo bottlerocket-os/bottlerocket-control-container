@@ -38,3 +38,42 @@ For example:
 # ex: echo '{"ssm":{"activation-id":"foo","activation-code":"bar","region":"us-west-2"}}' | base64
 user-data = "eyJzc20iOnsiYWN0aXZhdGlvbi1pZCI6ImZvbyIsImFjdGl2YXRpb24tY29kZSI6ImJhciIsInJlZ2lvbiI6InVzLXdlc3QtMiJ9fQo="
 ```
+
+## Inspector SBOM Upload (corgid)
+
+This container includes `corgid`, a binary that collects the Bottlerocket package inventory, converts it to a [CycloneDX](https://cyclonedx.org/) SBOM, and sends it to the Amazon Inspector API for vulnerability scanning. It runs automatically in the background when the container starts.
+
+### Disabling corgid
+
+To disable Inspector SBOM upload, set `upload-sbom` to `false` in the control container's user data:
+
+```json
+{
+  "inspector": {
+    "upload-sbom": false
+  }
+}
+```
+
+Base64-encode the JSON and set it in your instance user data:
+
+```toml
+[settings.host-containers.control]
+# echo '{"inspector": {"upload-sbom": false}}' | base64
+user-data = "eyJpbnNwZWN0b3IiOiB7InVwbG9hZC1zYm9tIjogZmFsc2V9fQ=="
+```
+
+This can be combined with SSM hybrid activation settings in the same JSON object:
+
+```json
+{
+  "ssm": {
+    "activation-id": "foo",
+    "activation-code": "bar",
+    "region": "us-west-2"
+  },
+  "inspector": {
+    "upload-sbom": false
+  }
+}
+```

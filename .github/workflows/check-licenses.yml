@@ -1,0 +1,19 @@
+name: Check Licenses
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'sources/**'
+  pull_request:
+    branches: [develop]
+    paths:
+      - 'sources/**'
+
+jobs:
+  check-licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check licenses
+        run: make check-licenses

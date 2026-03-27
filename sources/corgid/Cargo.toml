@@ -1,0 +1,33 @@
+[package]
+name = "corgid"
+version = "0.1.0"
+edition = "2021"
+authors = ["Shikha Vyaghra <vyaghras@amazon.com>"]
+license = "Apache-2.0 OR MIT"
+publish = false
+
+[[bin]]
+name = "corgid"
+path = "src/main.rs"
+
+[features]
+fips = ["rustls/fips", "aws-lc-rs/fips"]
+
+[dependencies]
+aws-lc-rs = { version = "1", features = ["bindgen"] }
+aws-sigv4 = { version = "1", features = ["sign-http"] }
+aws-credential-types = "1"
+aws-smithy-runtime-api = { version = "1", features = ["client"] }
+base64 = "0.22"
+chrono = { version = "0.4", features = ["now"] }
+flate2 = "1"
+hex = "0.4"
+log = "0.4"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+rustls = { version = "0.23", default-features = false, features = ["aws_lc_rs", "logging", "std", "tls12"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+simplelog = "0.12"
+snafu = "0.8"
+uuid = { version = "1", features = ["v4", "serde"] }
