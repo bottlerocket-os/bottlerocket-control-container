@@ -1,3 +1,7 @@
+# 0.20.6
+
+* Update SSM version to 3.3.4268.0
+
 # 0.20.5
 
 * Update SSM version to 3.3.4177.0
