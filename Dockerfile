@@ -1,6 +1,7 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023 AS builder
 
-RUN dnf install -y \
+RUN dnf upgrade -y --releasever=latest && \
+    dnf install -y \
     'dnf-command(download)' \
     cpio
 
@@ -31,7 +32,7 @@ LABEL "org.opencontainers.image.version"="$IMAGE_VERSION"
 # SSM Agent is downloaded from eu-north-1 as this region gets new releases of SSM Agent first.
 COPY ./hashes/ssm ./hashes
 COPY ./gpg-keys/amazon-ssm-agent.gpg ./amazon-ssm-agent.gpg
-RUN dnf update -y && \
+RUN dnf upgrade -y --releasever=latest && \
     dnf install -y \
         crypto-policies-scripts \
         jq \
