@@ -1,0 +1,43 @@
+[licenses]
+version = 2
+
+confidence-threshold = 0.93
+
+allow = [
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "ISC",
+    "MIT",
+    "OpenSSL",
+    "Unicode-3.0",
+    "Unlicense",
+    "Zlib"
+]
+
+exceptions = [
+    { name = "webpki-roots", allow = ["CDLA-Permissive-2.0"], version = "*" },
+]
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"
+
+skip-tree = [
+    # Transitive duplicates from aws-sigv4/aws-lc-rs/ring/uuid dependency trees
+    { name = "block-buffer" },
+    { name = "cpufeatures" },
+    { name = "crypto-common" },
+    { name = "digest" },
+    { name = "getrandom" },
+    { name = "http" },
+    { name = "http-body" },
+    { name = "r-efi" },
+    { name = "sha2" },
+    { name = "untrusted" },
+    { name = "windows-sys" },
+    { name = "wit-bindgen" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

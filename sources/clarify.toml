@@ -1,0 +1,66 @@
+[spdx]
+ignore-licenses = [
+    # Apache-2.0 is often misclassified as Pixar
+    "Pixar"
+]
+
+[clarify.typenum]
+expression = "MIT OR Apache-2.0"
+license-files = [
+    { path = "LICENSE", hash = 0xa4618a29 },
+    { path = "LICENSE-APACHE", hash = 0x91d5a0a7 },
+    { path = "LICENSE-MIT", hash = 0xb9f15462 },
+]
+
+[clarify.aws-lc-rs]
+expression = "ISC AND (Apache-2.0 OR ISC) AND MIT"
+license-files = [
+    { path = "LICENSE", hash = 0x8f713da7 },
+]
+
+[clarify.minimal-lexical]
+expression = "MIT OR Apache-2.0"
+license-files = [
+    { path = "LICENSE-MIT", hash = 0x386ca1bc },
+    { path = "LICENSE-APACHE", hash = 0x4fccb6b7 },
+]
+skip-files = [
+    "LICENSE.md",  # contains BSD-3-Clause for third-party test data, not distributed
+]
+
+[clarify.aws-lc-fips-sys]
+expression = "ISC AND (Apache-2.0 OR ISC) AND OpenSSL AND MIT"
+license-files = [
+    { path = "LICENSE", hash = 0xf308ccd7 },
+    { path = "aws-lc/LICENSE", hash = 0xb6d14686 },
+    { path = "aws-lc/third_party/fiat/LICENSE", hash = 0x75829ee2 },
+]
+
+[clarify.aws-lc-sys]
+expression = "ISC AND (Apache-2.0 OR ISC) AND Apache-2.0 AND MIT AND BSD-3-Clause AND (Apache-2.0 OR ISC OR MIT) AND (Apache-2.0 OR ISC OR MIT-0)"
+license-files = [
+    { path = "LICENSE", hash = 0x6cb0b0bb },
+    { path = "aws-lc/LICENSE", hash = 0xc884acb6 },
+    { path = "aws-lc/third_party/fiat/LICENSE", hash = 0x75829ee2 },
+]
+
+[clarify.ring]
+expression = "Apache-2.0 AND ISC AND MIT AND OpenSSL"
+license-files = [
+    { path = "LICENSE", hash = 0xd99693a },
+    { path = "LICENSE-BoringSSL", hash = 0x8f795a3 },
+    { path = "LICENSE-other-bits", hash = 0x8b770de2 },
+    { path = "src/polyfill/once_cell/LICENSE-APACHE", hash = 0x24b54f4b },
+    { path = "src/polyfill/once_cell/LICENSE-MIT", hash = 0x69371061 },
+    { path = "third_party/fiat/LICENSE", hash = 0x931a8dd4 },
+]
+
+[clarify.regex-syntax]
+expression = "MIT OR Apache-2.0"
+license-files = [
+    { path = "LICENSE-MIT", hash = 0xb755395b },
+    { path = "LICENSE-APACHE", hash = 0x24b54f4b },
+]
+skip-files = [
+    "src/unicode_tables/LICENSE-UNICODE",
+]

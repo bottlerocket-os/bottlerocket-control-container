@@ -1,3 +1,32 @@
+ARG SDK_IMAGE
+FROM ${SDK_IMAGE} as rust-builder
+
+ARG UNAME_ARCH
+USER root
+ENV CARGO_HOME=/src/.cargo
+
+# Add sources
+ADD ./sources /src/
+
+# Fetch dependencies
+RUN cargo fetch --locked --manifest-path /src/corgid/Cargo.toml
+
+# Set bindgen clang arguments for musl compilation
+ENV BINDGEN_EXTRA_CLANG_ARGS="--target=${UNAME_ARCH}-bottlerocket-linux-musl --sysroot=/${UNAME_ARCH}-bottlerocket-linux-musl/sys-root"
+
+# Build corgid statically linked with musl
+RUN cargo install --offline --locked --target ${UNAME_ARCH}-bottlerocket-linux-musl --path /src/corgid --root /output
+
+# Build corgid with FIPS crypto
+RUN cargo install --offline --locked --target ${UNAME_ARCH}-bottlerocket-linux-musl --features fips --path /src/corgid --root /output-fips
+
+# Gather licenses of dependencies
+RUN /usr/libexec/tools/bottlerocket-license-scan \
+    --clarify /src/clarify.toml \
+    --spdx-data /usr/libexec/tools/spdx-data \
+    --out-dir /licenses \
+    cargo --offline --locked /src/corgid/Cargo.toml
+
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023 AS builder
 
 RUN dnf upgrade -y --releasever=latest && \
@@ -62,6 +91,11 @@ COPY --from=builder /root/build/util-linux/usr/share/licenses/util-linux/COPYING
                     /root/build/util-linux/usr/share/licenses/util-linux/COPYING.LGPL-2.1-or-later \
                     /usr/share/licenses/util-linux/
 RUN ln -s /opt/util-linux/bin/* /usr/bin
+
+# Copy corgid binaries and licenses
+COPY --from=rust-builder /output/bin/corgid /usr/sbin/corgid
+COPY --from=rust-builder /output-fips/bin/corgid /usr/sbin/corgid-fips
+COPY --from=rust-builder /licenses /usr/share/licenses/corgid
 
 # Validate amazon-ssm-agent binary
 RUN /usr/bin/amazon-ssm-agent -version

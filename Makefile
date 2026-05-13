@@ -1,3 +1,5 @@
+TOP := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+
 # IMAGE_NAME is the full name of the container image being built.
 IMAGE_NAME ?= $(notdir $(shell pwd -P))$(IMAGE_ARCH_SUFFIX):$(IMAGE_VERSION)$(addprefix -,$(SHORT_SHA))
 # IMAGE_VERSION is the semver version that's tagged on the image.
@@ -19,10 +21,71 @@ ARCH ?= $(lastword $(subst :, ,$(filter $(UNAME_ARCH):%,x86_64:amd64 aarch64:arm
 # SSM_AGENT_VERSION is the SSM Agent's distributed RPM Version to install.
 SSM_AGENT_VERSION ?= 3.3.4268.0
 
-.PHONY: all build check check-ssm-agent download-ssm-agent update-ssm-agent
+# BOTTLEROCKET_SDK_VERSION is the SDK image used to build corgid.
+BOTTLEROCKET_SDK_VERSION ?= v0.73.0
+
+.PHONY: all build check check-ssm-agent check-licenses fetch fmt clippy test download-ssm-agent update-ssm-agent
 
 # Run all build tasks for this container image.
 all: build check
+
+# Fetches crates from upstream
+fetch:
+	docker run --rm \
+		--user "$(shell id -u):$(shell id -g)" \
+		--security-opt label=disable \
+		--env CARGO_HOME="/src/.cargo" \
+		--volume "$(TOP)/sources:/src" \
+		--workdir "/src/" \
+		"public.ecr.aws/bottlerocket/bottlerocket-sdk:$(BOTTLEROCKET_SDK_VERSION)" \
+		bash -c "cargo fetch --locked --manifest-path /src/corgid/Cargo.toml"
+
+# Checks allowed/denied upstream licenses
+check-licenses: fetch
+	docker run --rm \
+		--network none \
+		--user "$(shell id -u):$(shell id -g)" \
+		--security-opt label=disable \
+		--env CARGO_HOME="/src/.cargo" \
+		--volume "$(TOP)/sources:/src" \
+		--workdir "/src/" \
+		"public.ecr.aws/bottlerocket/bottlerocket-sdk:$(BOTTLEROCKET_SDK_VERSION)" \
+		bash -c "cd /src/corgid && cargo deny --all-features check --disable-fetch licenses bans sources"
+
+# Check code formatting
+fmt: fetch
+	docker run --rm \
+		--user "$(shell id -u):$(shell id -g)" \
+		--security-opt label=disable \
+		--env CARGO_HOME="/src/.cargo" \
+		--volume "$(TOP)/sources:/src" \
+		--workdir "/src/" \
+		"public.ecr.aws/bottlerocket/bottlerocket-sdk:$(BOTTLEROCKET_SDK_VERSION)" \
+		bash -c "cargo fmt --manifest-path /src/corgid/Cargo.toml -- --check"
+
+# Run clippy lints
+clippy: fetch
+	docker run --rm \
+		--network none \
+		--user "$(shell id -u):$(shell id -g)" \
+		--security-opt label=disable \
+		--env CARGO_HOME="/src/.cargo" \
+		--volume "$(TOP)/sources:/src" \
+		--workdir "/src/" \
+		"public.ecr.aws/bottlerocket/bottlerocket-sdk:$(BOTTLEROCKET_SDK_VERSION)" \
+		bash -c "cargo clippy --locked --manifest-path /src/corgid/Cargo.toml -- -D warnings"
+
+# Run unit tests
+test: fetch
+	docker run --rm \
+		--network none \
+		--user "$(shell id -u):$(shell id -g)" \
+		--security-opt label=disable \
+		--env CARGO_HOME="/src/.cargo" \
+		--volume "$(TOP)/sources:/src" \
+		--workdir "/src/" \
+		"public.ecr.aws/bottlerocket/bottlerocket-sdk:$(BOTTLEROCKET_SDK_VERSION)" \
+		bash -c "cargo test --locked --manifest-path /src/corgid/Cargo.toml"
 
 # Create a distribution container image tarball for release.
 dist: all
@@ -30,11 +93,13 @@ dist: all
 	docker save $(IMAGE_NAME) | gzip > $(DISTFILE)
 
 # Build the container image.
-build:
+build: check-licenses fmt clippy
 	DOCKER_BUILDKIT=1 docker build $(DOCKER_BUILD_FLAGS) \
 		--tag $(IMAGE_NAME) \
 		--build-arg IMAGE_VERSION="$(IMAGE_VERSION)" \
 		--build-arg SSM_AGENT_VERSION="$(SSM_AGENT_VERSION)" \
+		--build-arg UNAME_ARCH="$(UNAME_ARCH)" \
+		--build-arg SDK_IMAGE="public.ecr.aws/bottlerocket/bottlerocket-sdk:$(BOTTLEROCKET_SDK_VERSION)" \
 		-f Dockerfile . >&2
 
 # Run checks against the container image.

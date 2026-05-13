@@ -90,5 +90,16 @@ if [[ -s "${USER_DATA}" ]] \
   enable_hybrid_env_ssm
 fi
 
+# Run Inspector SBOM upload; errors are logged but do not block container startup
+if jq -e '.inspector["upload-sbom"] == false' "${USER_DATA}" &>/dev/null; then
+  log "Inspector SBOM upload disabled via user-data"
+else
+  if [[ ${FIPS_MODE_FLAG} -eq 1 ]]; then
+    /usr/sbin/corgid-fips || log "Inspector SBOM upload failed, continuing with container startup"
+  else
+    /usr/sbin/corgid || log "Inspector SBOM upload failed, continuing with container startup"
+  fi
+fi
+
 # Start a single ssm process in the foreground
 exec /usr/bin/amazon-ssm-agent
