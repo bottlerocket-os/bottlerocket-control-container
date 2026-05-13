@@ -1,3 +1,13 @@
+# 0.21.0
+
+* Update SSM version to 3.3.4364.0 ([#101])
+* Add Corgid for Inspector integration ([#99])
+* Replace `dnf update` with `dnf upgrade --releasever=latest` ([#100])
+
+[#99]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/99
+[#100]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/100
+[#101]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/101
+
 # 0.20.6
 
 * Update SSM version to 3.3.4268.0
