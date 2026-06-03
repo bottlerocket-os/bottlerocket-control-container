@@ -19,7 +19,7 @@ UNAME_ARCH = $(shell uname -m)
 ARCH ?= $(lastword $(subst :, ,$(filter $(UNAME_ARCH):%,x86_64:amd64 aarch64:arm64)))
 
 # SSM_AGENT_VERSION is the SSM Agent's distributed RPM Version to install.
-SSM_AGENT_VERSION ?= 3.3.4364.0
+SSM_AGENT_VERSION ?= 3.3.4624.0
 
 # BOTTLEROCKET_SDK_VERSION is the SDK image used to build corgid.
 BOTTLEROCKET_SDK_VERSION ?= v0.73.0
