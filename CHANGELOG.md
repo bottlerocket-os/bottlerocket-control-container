@@ -1,3 +1,12 @@
+# 0.21.4
+
+* Update SSM version to 3.3.4851.0 ([#106])
+* Update amazon-ssm-agent gpg public key ([#106])
+* Update cmov from 0.5.3 to 0.5.4 ([#105])
+
+[#105]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/105
+[#106]: https://github.com/bottlerocket-os/bottlerocket-control-container/pull/106
+
 # 0.21.3
 
 * Update SSM version to 3.3.4793.0
