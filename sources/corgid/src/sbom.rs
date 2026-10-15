@@ -12,6 +12,10 @@ use uuid::Uuid;
 const INVENTORY_VERSION: &str = "0.1.0";
 const BR_RELEASE_PATH: &str = "/etc/bottlerocket-release";
 
+// CycloneDX component types
+const COMPONENT_TYPE_OPERATING_SYSTEM: &str = "operating-system";
+const COMPONENT_TYPE_APPLICATION: &str = "application";
+
 /// SBOM metadata including generation timestamp and tooling info.
 #[derive(Serialize)]
 pub struct Metadata {
@@ -163,7 +167,7 @@ impl Component {
         };
         Self {
             bom_ref: format!("comp-{}", index),
-            component_type: "library".into(),
+            component_type: COMPONENT_TYPE_APPLICATION.into(),
             name: pkg.name.clone(),
             version: format!("{}-{}", pkg.version, pkg.release),
             purl: Some(format!(
@@ -200,7 +204,7 @@ impl Sbom {
         let properties: Vec<Property> = metadata.into();
         let os_component = Component {
             bom_ref: "comp-os".into(),
-            component_type: "operating-system".into(),
+            component_type: COMPONENT_TYPE_OPERATING_SYSTEM.into(),
             name: os_release.name.clone(),
             version: os_release.version_id.clone(),
             purl: None,
@@ -220,7 +224,7 @@ impl Sbom {
         );
 
         let tool_component = ToolComponent {
-            component_type: "application".into(),
+            component_type: COMPONENT_TYPE_APPLICATION.into(),
             author: "Amazon Web Services, Inc. (AWS)".into(),
             name: "corgid".into(),
             version: INVENTORY_VERSION.into(),
@@ -271,7 +275,7 @@ mod tests {
 
         let component = Component::from_package(&pkg, 0, "1.47.0");
 
-        assert_eq!(component.component_type, "library");
+        assert_eq!(component.component_type, "application");
         assert_eq!(component.name, "glibc");
         assert_eq!(component.version, "2.38-1.br1");
         assert_eq!(component.bom_ref, "comp-0");
@@ -356,7 +360,7 @@ mod tests {
         assert_eq!(instance_id_prop.value, "i-0123456789abcdef0");
 
         // Library component
-        assert_eq!(sbom.components[1].component_type, "library");
+        assert_eq!(sbom.components[1].component_type, "application");
         assert_eq!(sbom.components[1].name, "glibc");
         assert_eq!(sbom.components[1].version, "2.38-1.br1");
         assert_eq!(
